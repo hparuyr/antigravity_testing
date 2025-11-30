@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data Viewer</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .controls { margin-bottom: 20px; }
+        select, button { padding: 8px; margin-right: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h1>Stock Data Viewer</h1>
+
+    <div class="controls">
+        <label for="symbolSelect">Symbol:</label>
+        <select id="symbolSelect">
+            <option value="" disabled selected>Select Symbol</option>
+        </select>
+
+        <label for="timeRangeSelect">Time Range:</label>
+        <select id="timeRangeSelect">
+            <option value="5min">Last 5 Minutes</option>
+            <option value="1hour">Last 1 Hour</option>
+            <option value="12hours">Last 12 Hours</option>
+            <option value="1day">Last 1 Day</option>
+            <option value="1week">Last 1 Week</option>
+            <option value="1month">Last 1 Month</option>
+        </select>
+
+        <button onclick="loadData()">Load Data</button>
+    </div>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Date/Time</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data rows will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        const API_BASE = '/api';
+
+        // Load symbols on page load
+        window.onload = async () => {
+            try {
+                const response = await fetch(`${API_BASE}/symbols`);
+                const symbols = await response.json();
+                const select = document.getElementById('symbolSelect');
+                symbols.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s.ticker;
+                    option.text = `${s.ticker} (${s.name})`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading symbols:', error);
+            }
+        };
+
+        async function loadData() {
+            const ticker = document.getElementById('symbolSelect').value;
+            const range = document.getElementById('timeRangeSelect').value;
+            
+            if (!ticker) {
+                alert('Please select a symbol');
+                return;
+            }
+
+            let url = '';
+            let since = new Date();
+
+            if (['5min', '1hour', '12hours', '1day'].includes(range)) {
+                // Intraday
+                if (range === '5min') since.setMinutes(since.getMinutes() - 5);
+                if (range === '1hour') since.setHours(since.getHours() - 1);
+                if (range === '12hours') since.setHours(since.getHours() - 12);
+                if (range === '1day') since.setDate(since.getDate() - 1);
+                
+                // Format as ISO Local Date Time (yyyy-MM-ddTHH:mm:ss)
+                // Note: toISOString() returns UTC. We need local time matching the server/DB logic or handle timezones properly.
+                // The DB stores strings. Let's send local ISO string.
+                const sinceStr = toLocalIsoString(since);
+                url = `${API_BASE}/intraday/${ticker}?since=${sinceStr}`;
+            } else {
+                // Daily
+                if (range === '1week') since.setDate(since.getDate() - 7);
+                if (range === '1month') since.setMonth(since.getMonth() - 1);
+                
+                // Format as yyyy-MM-dd
+                const sinceStr = since.toISOString().split('T')[0];
+                url = `${API_BASE}/daily/${ticker}?since=${sinceStr}`;
+            }
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                renderTable(data, range);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error loading data');
+            }
+        }
+
+        function toLocalIsoString(date) {
+            const pad = (num) => (num < 10 ? '0' : '') + num;
+            return date.getFullYear() +
+                '-' + pad(date.getMonth() + 1) +
+                '-' + pad(date.getDate()) +
+                'T' + pad(date.getHours()) +
+                ':' + pad(date.getMinutes()) +
+                ':' + pad(date.getSeconds());
+        }
+
+        function renderTable(data, range) {
+            const tbody = document.querySelector('#dataTable tbody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">No data found for this range</td></tr>';
+                return;
+            }
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                // Handle both DailyPrice (date) and IntradayPrice (timestamp)
+                const time = item.timestamp || item.date;
+                row.innerHTML = `
+                    <td>${time}</td>
+                    <td>${item.open}</td>
+                    <td>${item.high}</td>
+                    <td>${item.low}</td>
+                    <td>${item.close}</td>
+                    <td>${item.volume}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
