@@ -37,14 +37,12 @@ This guide explains how to deploy the **Stock Dashboard** using **Neon** for the
 
 ## 4. Final Configuration
 
-1.  Update your `StockController.java` in the code to allow CORS for your new frontend domain.
-    ```java
-    @CrossOrigin(origins = {
-        "http://localhost:5173",
-        "https://your-frontend-domain.up.railway.app"
-    })
-    ```
-2.  Push this change to GitHub. Railway will auto-redeploy.
+1.  **Backend (Railway)**:
+    *   Go to **Variables**.
+    *   Add `CORS_ALLOWED_ORIGINS`: `https://your-frontend-domain.up.railway.app`
+    *   (Railway will auto-redeploy).
+
+2.  **Done!** Your application is fully integrated.
 
 ## Summary of Free Tier Limits
 

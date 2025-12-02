@@ -1,5 +1,5 @@
 # Multi-stage build for React frontend
-FROM node:18-alpine AS build
+FROM node:25-alpine AS build
 WORKDIR /app
 
 # Copy package files
