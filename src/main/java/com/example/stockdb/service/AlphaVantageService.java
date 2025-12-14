@@ -3,6 +3,8 @@ package com.example.stockdb.service;
 import com.example.stockdb.model.DailyPrice;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +17,8 @@ import java.util.Map;
 
 @Service
 public class AlphaVantageService implements StockDataFetcher {
+
+    private static final Logger logger = LoggerFactory.getLogger(AlphaVantageService.class);
 
     @Value("${stock.api.url}")
     private String apiUrl;
@@ -43,7 +47,7 @@ public class AlphaVantageService implements StockDataFetcher {
 
             JsonNode timeSeries = root.path("Time Series (Daily)");
             if (timeSeries.isMissingNode()) {
-                System.err.println("Error fetching data for " + symbol + ": " + root.toString());
+                logger.error("Error fetching data for {}: {}", symbol, root.toString());
                 return new ArrayList<>();
             }
 
@@ -71,7 +75,7 @@ public class AlphaVantageService implements StockDataFetcher {
             return prices;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error fetching daily prices for {}", symbol, e);
             return new ArrayList<>();
         }
     }
@@ -90,7 +94,7 @@ public class AlphaVantageService implements StockDataFetcher {
 
             JsonNode timeSeries = root.path("Time Series (" + interval + ")");
             if (timeSeries.isMissingNode()) {
-                System.err.println("Error fetching intraday data for " + symbol + ": " + root.toString());
+                logger.error("Error fetching intraday data for {}: {}", symbol, root.toString());
                 return new ArrayList<>();
             }
 
@@ -116,7 +120,7 @@ public class AlphaVantageService implements StockDataFetcher {
             return prices;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error fetching intraday prices for {}", symbol, e);
             return new ArrayList<>();
         }
     }

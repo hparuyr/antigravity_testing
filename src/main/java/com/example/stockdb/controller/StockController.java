@@ -59,15 +59,12 @@ public class StockController {
 
     @GetMapping("/intraday/{ticker}")
     public List<IntradayPrice> getIntradayPrices(@PathVariable String ticker, @RequestParam String since) {
-        // since is ISO date time string or similar?
-        // Let's expect "yyyy-MM-ddTHH:mm:ss" (ISO Local Date Time)
         LocalDateTime sinceTime = LocalDateTime.parse(since);
         return stockService.getIntradayPricesSince(ticker, sinceTime);
     }
 
     @GetMapping("/daily/{ticker}")
     public List<DailyPrice> getDailyPrices(@PathVariable String ticker, @RequestParam String since) {
-        // since is "yyyy-MM-dd"
         LocalDate sinceDate = LocalDate.parse(since);
         return stockService.getDailyPricesSince(ticker, sinceDate);
     }

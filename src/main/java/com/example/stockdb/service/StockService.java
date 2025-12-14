@@ -26,7 +26,6 @@ public class StockService {
     private final IntradayPriceRepository intradayPriceRepository;
     private final StockDataFetcher stockDataFetcher;
 
-    @Autowired
     public StockService(ExchangeRepository exchangeRepository, SymbolRepository symbolRepository,
             DailyPriceRepository dailyPriceRepository, IntradayPriceRepository intradayPriceRepository,
             StockDataFetcher stockDataFetcher) {
@@ -161,19 +160,7 @@ public class StockService {
         if (symbol == null) {
             throw new RuntimeException("Symbol not found: " + ticker);
         }
-        // Assuming DailyPriceRepository has a similar method or we filter in memory (or
-        // add to repo)
-        // Let's add to repo first? Or just use findAll and filter?
-        // DailyPrice date is String "yyyy-MM-dd".
-        // Let's check DailyPriceRepository.
-        // It only has findBySymbolId. Let's filter in memory for now or add to repo.
-        // Adding to repo is better. But let's check if I can modify repo in this step.
-        // I'll filter in memory for DailyPrice to avoid another file edit if possible,
-        // or edit repo next.
-        // Actually, let's edit DailyPriceRepository too.
-        // Wait, I can't edit DailyPriceRepository in this multi_replace call for
-        // StockService.
-        // I'll filter in memory for now, it's safer for this step.
+
         List<DailyPrice> allPrices = dailyPriceRepository.findBySymbolId(symbol.getId());
         String sinceStr = since.toString();
         return allPrices.stream()

@@ -45,13 +45,6 @@ public class StockScheduler {
         // Ensure symbols exist
         for (String ticker : TICKERS) {
             try {
-                // Check if symbol exists (this will throw exception if not found in current
-                // implementation,
-                // but let's check properly or handle exception)
-                // The current service throws RuntimeException if not found.
-                // Let's rely on repository directly or catch exception?
-                // Better to use a safe check if possible, but service throws.
-                // Let's try to fetch, if exception, create.
                 try {
                     stockService.calculateSimpleMovingAverage(ticker, 1); // Just to check existence
                 } catch (RuntimeException e) {
