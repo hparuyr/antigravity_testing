@@ -10,7 +10,8 @@ import lombok.Setter;
 public class Exchange {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false, unique = true)

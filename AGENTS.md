@@ -2,8 +2,10 @@
 
 ## Quick start
 ```bash
-cp .env.example .env   # fill in Neon credentials
-mvn spring-boot:run     # backend on :8080
+mvn spring-boot:run     # backend on :8080 (default: local profile, H2 in-memory, no DB needed)
+
+# Docker (production with PostgreSQL):
+#   docker-compose up --build
 ```
 
 ## Architecture
@@ -49,7 +51,7 @@ All under `/api`; actuator health at `/actuator/health`.
 | GET | `/intraday/{ticker}?since=YYYY-MM-DDTHH:mm:ss` | Intraday since timestamp |
 
 ## Scheduled tasks
-- **Daily data**: every 12h (AAPL, IBM, GOOGL, MSFT, META, NFLX)
+- **Daily data**: every 1h (AAPL, IBM, GOOGL, MSFT, META, NFLX)
 - **Intraday data**: every 20min (1min interval)
 - 15s delay between tickers (Alpha Vantage rate limit)
 - On startup, auto-creates NASDAQ exchange (XNAS, USD, America/New_York) + default tickers
@@ -60,4 +62,4 @@ All under `/api`; actuator health at `/actuator/health`.
 - CORS via `CorsConfig.java` — reads `cors.allowed.origins` env var, mapped on `/api/**`
 - Stock data fetcher: `StockDataFetcher` interface → `AlphaVantageService` (uses `RestTemplate` + `Jackson`)
 - `AlphaVantageService` creates its own `RestTemplate` and `ObjectMapper` (not injected)
-- Docker healthcheck uses `wget http://localhost:8080/actuator/health`
+- Docker healthcheck uses `wget http://localhost:5000/actuator/health`

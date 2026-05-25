@@ -2,34 +2,37 @@ package com.example.stockdb.service;
 
 import com.example.stockdb.model.Exchange;
 import com.example.stockdb.model.Symbol;
+import com.example.stockdb.repository.ExchangeRepository;
 import com.example.stockdb.repository.SymbolRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import java.util.List;
 import jakarta.annotation.PostConstruct;
 
-@Component
-@Profile("!demo")
-public class StockScheduler {
+import java.util.List;
 
-    private static final Logger log = LoggerFactory.getLogger(StockScheduler.class);
+@Component
+@Profile("demo")
+public class DemoDataSeeder {
+
+    private static final Logger log = LoggerFactory.getLogger(DemoDataSeeder.class);
     private static final List<String> TICKERS = List.of("AAPL", "IBM", "GOOGL", "MSFT", "META", "NFLX");
 
     private final StockService stockService;
+    private final ExchangeRepository exchangeRepository;
     private final SymbolRepository symbolRepository;
 
-    public StockScheduler(StockService stockService, SymbolRepository symbolRepository) {
+    public DemoDataSeeder(StockService stockService, ExchangeRepository exchangeRepository, SymbolRepository symbolRepository) {
         this.stockService = stockService;
+        this.exchangeRepository = exchangeRepository;
         this.symbolRepository = symbolRepository;
     }
 
     @PostConstruct
-    public void init() {
-        log.info("Initializing StockScheduler...");
-        List<Exchange> exchanges = stockService.getAllExchanges();
+    public void seed() {
+        log.info("Seeding demo data...");
+        List<Exchange> exchanges = exchangeRepository.findAll();
         Exchange exchange;
         if (exchanges.isEmpty()) {
             exchange = new Exchange();
@@ -37,40 +40,24 @@ public class StockScheduler {
             exchange.setCurrency("USD");
             exchange.setMic("XNAS");
             exchange.setTimezone("America/New_York");
-            exchange = stockService.createExchange(exchange);
+            exchange = exchangeRepository.save(exchange);
             log.info("Created default exchange: NASDAQ");
         } else {
             exchange = exchanges.get(0);
         }
         for (String ticker : TICKERS) {
-            if (symbolRepository.findByTicker(ticker) == null) {
-                Symbol symbol = new Symbol();
+            Symbol symbol = symbolRepository.findByTicker(ticker);
+            if (symbol == null) {
+                symbol = new Symbol();
                 symbol.setTicker(ticker);
                 symbol.setName(ticker + " Inc.");
                 symbol.setType("Common Stock");
                 symbol.setExchange(exchange);
-                stockService.createSymbol(symbol);
+                symbolRepository.save(symbol);
                 log.info("Created symbol: {}", ticker);
             }
+            stockService.fetchAndStoreDailyPrices(ticker);
         }
-    }
-
-    @Scheduled(fixedRate = 60 * 60 * 1000)
-    public void fetchDailyData() {
-        log.info("Starting scheduled daily stock data fetch...");
-        for (String ticker : TICKERS) {
-            try {
-                int count = stockService.fetchAndStoreDailyPrices(ticker);
-                if (count > 0) {
-                    log.info("Fetched {} daily records for {}", count, ticker);
-                } else {
-                    log.warn("No daily records fetched for {}", ticker);
-                }
-                Thread.sleep(15000);
-            } catch (Exception e) {
-                log.error("Error fetching daily data for {}", ticker, e);
-            }
-        }
-        log.info("Completed scheduled daily stock data fetch.");
+        log.info("Demo data seeding complete.");
     }
 }
