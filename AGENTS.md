@@ -62,4 +62,4 @@ All under `/api`; actuator health at `/actuator/health`.
 - CORS via `CorsConfig.java` — reads `cors.allowed.origins` env var, mapped on `/api/**`
 - Stock data fetcher: `StockDataFetcher` interface → `AlphaVantageService` (uses `RestTemplate` + `Jackson`)
 - `AlphaVantageService` creates its own `RestTemplate` and `ObjectMapper` (not injected)
-- Docker healthcheck uses `wget http://localhost:5000/actuator/health`
+- Docker healthcheck uses `wget http://localhost:8080/actuator/health`
