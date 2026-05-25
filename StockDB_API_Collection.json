@@ -1,0 +1,249 @@
+{
+    "info": {
+        "_postman_id": "stock-db-api-collection",
+        "name": "Stock DB API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "General",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8080/",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Exchanges",
+            "item": [
+                {
+                    "name": "Get All Exchanges",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8080/api/exchanges",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "exchanges"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Exchange",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"NASDAQ\",\n    \"currency\": \"USD\",\n    \"mic\": \"XNAS\",\n    \"timezone\": \"America/New_York\"\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/exchanges",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "exchanges"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Symbols",
+            "item": [
+                {
+                    "name": "Get All Symbols",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8080/api/symbols",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "symbols"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Symbols by Exchange",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8080/api/exchanges/1/symbols",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "exchanges",
+                                "1",
+                                "symbols"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Symbol",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ticker\": \"AAPL\",\n    \"name\": \"Apple Inc.\",\n    \"type\": \"Common Stock\",\n    \"exchange\": {\n        \"id\": 1\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/symbols",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "symbols"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Prices",
+            "item": [
+                {
+                    "name": "Get Prices by Symbol",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8080/api/symbols/1/prices",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "symbols",
+                                "1",
+                                "prices"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Daily Price",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"date\": \"2023-10-27\",\n    \"open\": 150.0,\n    \"high\": 155.0,\n    \"low\": 149.0,\n    \"close\": 154.0,\n    \"volume\": 1000000,\n    \"adjustedClose\": 154.0,\n    \"symbol\": {\n        \"id\": 1\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/prices",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "prices"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Daily Prices Since",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8080/api/daily/AAPL?since=2023-01-01",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8080",
+                            "path": [
+                                "api",
+                                "daily",
+                                "AAPL"
+                            ],
+                            "query": [
+                                {
+                                    "key": "since",
+                                    "value": "2023-01-01"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

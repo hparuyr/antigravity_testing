@@ -9,5 +9,8 @@ import java.util.List;
 @Repository
 public interface DailyPriceRepository extends JpaRepository<DailyPrice, Long> {
     List<DailyPrice> findBySymbolId(Long symbolId);
+
     DailyPrice findBySymbolIdAndDate(Long symbolId, String date);
+
+    long countBySymbolId(Long symbolId);
 }

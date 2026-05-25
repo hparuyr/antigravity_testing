@@ -1,0 +1,5 @@
+CREATE ROLE abu WITH LOGIN PASSWORD 'abupc';
+
+CREATE DATABASE stock_db OWNER abu;
+
+DROP DATABASE stock_db;

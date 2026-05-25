@@ -6,15 +6,10 @@ import com.example.stockdb.model.Symbol;
 import com.example.stockdb.repository.DailyPriceRepository;
 import com.example.stockdb.repository.ExchangeRepository;
 import com.example.stockdb.repository.SymbolRepository;
-import com.example.stockdb.model.IntradayPrice;
-import com.example.stockdb.repository.IntradayPriceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -23,16 +18,13 @@ public class StockService {
     private final ExchangeRepository exchangeRepository;
     private final SymbolRepository symbolRepository;
     private final DailyPriceRepository dailyPriceRepository;
-    private final IntradayPriceRepository intradayPriceRepository;
     private final StockDataFetcher stockDataFetcher;
 
     public StockService(ExchangeRepository exchangeRepository, SymbolRepository symbolRepository,
-            DailyPriceRepository dailyPriceRepository, IntradayPriceRepository intradayPriceRepository,
-            StockDataFetcher stockDataFetcher) {
+            DailyPriceRepository dailyPriceRepository, StockDataFetcher stockDataFetcher) {
         this.exchangeRepository = exchangeRepository;
         this.symbolRepository = symbolRepository;
         this.dailyPriceRepository = dailyPriceRepository;
-        this.intradayPriceRepository = intradayPriceRepository;
         this.stockDataFetcher = stockDataFetcher;
     }
 
@@ -74,7 +66,12 @@ public class StockService {
             throw new RuntimeException("Symbol not found: " + ticker);
         }
 
-        List<DailyPrice> prices = stockDataFetcher.fetchDailyPrices(ticker);
+        String outputSize = "compact";
+        if (dailyPriceRepository.countBySymbolId(symbol.getId()) == 0) {
+            outputSize = "full";
+        }
+
+        List<DailyPrice> prices = stockDataFetcher.fetchDailyPrices(ticker, outputSize);
         int count = 0;
         for (DailyPrice price : prices) {
             price.setSymbol(symbol);
@@ -115,44 +112,6 @@ public class StockService {
         }
 
         return sum / days;
-    }
-
-    @Transactional
-    public int fetchAndStoreIntradayPrices(String ticker, String interval) {
-        Symbol symbol = symbolRepository.findByTicker(ticker);
-        if (symbol == null) {
-            throw new RuntimeException("Symbol not found: " + ticker);
-        }
-
-        List<IntradayPrice> prices = stockDataFetcher.fetchIntradayPrices(ticker, interval);
-        int count = 0;
-        for (IntradayPrice price : prices) {
-            price.setSymbol(symbol);
-            IntradayPrice existingPrice = intradayPriceRepository.findBySymbolIdAndTimestamp(symbol.getId(),
-                    price.getTimestamp());
-            if (existingPrice != null) {
-                existingPrice.setOpen(price.getOpen());
-                existingPrice.setHigh(price.getHigh());
-                existingPrice.setLow(price.getLow());
-                existingPrice.setClose(price.getClose());
-                existingPrice.setVolume(price.getVolume());
-                intradayPriceRepository.save(existingPrice);
-            } else {
-                intradayPriceRepository.save(price);
-            }
-            count++;
-        }
-        return count;
-    }
-
-    public List<IntradayPrice> getIntradayPricesSince(String ticker, LocalDateTime since) {
-        Symbol symbol = symbolRepository.findByTicker(ticker);
-        if (symbol == null) {
-            throw new RuntimeException("Symbol not found: " + ticker);
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return intradayPriceRepository.findBySymbolIdAndTimestampGreaterThanEqual(symbol.getId(),
-                since.format(formatter));
     }
 
     public List<DailyPrice> getDailyPricesSince(String ticker, LocalDate since) {

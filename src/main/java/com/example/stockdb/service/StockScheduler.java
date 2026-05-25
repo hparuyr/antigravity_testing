@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class StockScheduler {
@@ -66,8 +66,8 @@ public class StockScheduler {
         }
     }
 
-    // Run every 12 hours
-    @Scheduled(fixedRate = 12 * 60 * 60 * 1000)
+    // Run every 24 hours
+    @Scheduled(fixedRate = 24 * 60 * 60 * 1000)
     public void fetchDailyData() {
         logger.info("Starting scheduled daily stock data fetch...");
         for (String ticker : TICKERS) {
@@ -87,24 +87,4 @@ public class StockScheduler {
         logger.info("Completed scheduled daily stock data fetch.");
     }
 
-    // Run every 20 minutes
-    @Scheduled(fixedRate = 20 * 60 * 1000)
-    public void fetchIntradayData() {
-        logger.info("Starting scheduled intraday stock data fetch...");
-        for (String ticker : TICKERS) {
-            try {
-                int intradayCount = stockService.fetchAndStoreIntradayPrices(ticker, "1min");
-                if (intradayCount > 0) {
-                    logger.info("Fetched {} intraday (1min) records for {}", intradayCount, ticker);
-                } else {
-                    logger.warn("No intraday records fetched for {}", ticker);
-                }
-                // Rate limit: 15 seconds delay
-                Thread.sleep(15000);
-            } catch (Exception e) {
-                logger.error("Error fetching intraday data for {}", ticker, e);
-            }
-        }
-        logger.info("Completed scheduled intraday stock data fetch.");
-    }
 }

@@ -5,11 +5,15 @@ import com.example.stockdb.model.Exchange;
 import com.example.stockdb.model.Symbol;
 import com.example.stockdb.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.stockdb.model.IntradayPrice;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -55,12 +59,6 @@ public class StockController {
     @PostMapping("/prices")
     public DailyPrice addPrice(@RequestBody DailyPrice price) {
         return stockService.addPrice(price);
-    }
-
-    @GetMapping("/intraday/{ticker}")
-    public List<IntradayPrice> getIntradayPrices(@PathVariable String ticker, @RequestParam String since) {
-        LocalDateTime sinceTime = LocalDateTime.parse(since);
-        return stockService.getIntradayPricesSince(ticker, sinceTime);
     }
 
     @GetMapping("/daily/{ticker}")
