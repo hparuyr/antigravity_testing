@@ -1,23 +1,19 @@
 package com.example.stockdb.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "daily_prices", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"symbol_id", "date"})
 })
+@Getter @Setter
 public class DailyPrice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne(optional = false)
@@ -44,76 +40,4 @@ public class DailyPrice {
 
     @Column(name = "adjusted_close")
     private Double adjustedClose;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Symbol getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(Symbol symbol) {
-        this.symbol = symbol;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public Double getOpen() {
-        return open;
-    }
-
-    public void setOpen(Double open) {
-        this.open = open;
-    }
-
-    public Double getHigh() {
-        return high;
-    }
-
-    public void setHigh(Double high) {
-        this.high = high;
-    }
-
-    public Double getLow() {
-        return low;
-    }
-
-    public void setLow(Double low) {
-        this.low = low;
-    }
-
-    public Double getClose() {
-        return close;
-    }
-
-    public void setClose(Double close) {
-        this.close = close;
-    }
-
-    public Long getVolume() {
-        return volume;
-    }
-
-    public void setVolume(Long volume) {
-        this.volume = volume;
-    }
-
-    public Double getAdjustedClose() {
-        return adjustedClose;
-    }
-
-    public void setAdjustedClose(Double adjustedClose) {
-        this.adjustedClose = adjustedClose;
-    }
 }

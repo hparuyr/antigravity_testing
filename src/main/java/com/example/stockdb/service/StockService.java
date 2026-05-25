@@ -8,8 +8,8 @@ import com.example.stockdb.repository.ExchangeRepository;
 import com.example.stockdb.repository.SymbolRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -28,7 +28,6 @@ public class StockService {
         this.stockDataFetcher = stockDataFetcher;
     }
 
-    // Exchange Operations
     public List<Exchange> getAllExchanges() {
         return exchangeRepository.findAll();
     }
@@ -37,7 +36,6 @@ public class StockService {
         return exchangeRepository.save(exchange);
     }
 
-    // Symbol Operations
     public List<Symbol> getAllSymbols() {
         return symbolRepository.findAll();
     }
@@ -50,7 +48,6 @@ public class StockService {
         return symbolRepository.save(symbol);
     }
 
-    // Daily Price Operations
     public List<DailyPrice> getPricesBySymbol(Long symbolId) {
         return dailyPriceRepository.findBySymbolId(symbolId);
     }
@@ -65,53 +62,24 @@ public class StockService {
         if (symbol == null) {
             throw new RuntimeException("Symbol not found: " + ticker);
         }
-
-        String outputSize = "compact";
-        if (dailyPriceRepository.countBySymbolId(symbol.getId()) == 0) {
-            outputSize = "full";
-        }
-
+        String outputSize = dailyPriceRepository.countBySymbolId(symbol.getId()) == 0 ? "full" : "compact";
         List<DailyPrice> prices = stockDataFetcher.fetchDailyPrices(ticker, outputSize);
-        int count = 0;
         for (DailyPrice price : prices) {
             price.setSymbol(symbol);
-            DailyPrice existingPrice = dailyPriceRepository.findBySymbolIdAndDate(symbol.getId(), price.getDate());
-            if (existingPrice != null) {
-                existingPrice.setOpen(price.getOpen());
-                existingPrice.setHigh(price.getHigh());
-                existingPrice.setLow(price.getLow());
-                existingPrice.setClose(price.getClose());
-                existingPrice.setVolume(price.getVolume());
-                existingPrice.setAdjustedClose(price.getAdjustedClose());
-                dailyPriceRepository.save(existingPrice);
+            DailyPrice existing = dailyPriceRepository.findBySymbolIdAndDate(symbol.getId(), price.getDate());
+            if (existing != null) {
+                existing.setOpen(price.getOpen());
+                existing.setHigh(price.getHigh());
+                existing.setLow(price.getLow());
+                existing.setClose(price.getClose());
+                existing.setVolume(price.getVolume());
+                existing.setAdjustedClose(price.getAdjustedClose());
+                dailyPriceRepository.save(existing);
             } else {
                 dailyPriceRepository.save(price);
             }
-            count++;
         }
-        return count;
-    }
-
-    public Double calculateSimpleMovingAverage(String ticker, int days) {
-        Symbol symbol = symbolRepository.findByTicker(ticker);
-        if (symbol == null) {
-            throw new RuntimeException("Symbol not found: " + ticker);
-        }
-
-        List<DailyPrice> prices = dailyPriceRepository.findBySymbolId(symbol.getId());
-        // Sort by date descending (assuming repository doesn't sort)
-        prices.sort((p1, p2) -> p2.getDate().compareTo(p1.getDate()));
-
-        if (prices.size() < days) {
-            return null; // Not enough data
-        }
-
-        double sum = 0;
-        for (int i = 0; i < days; i++) {
-            sum += prices.get(i).getClose();
-        }
-
-        return sum / days;
+        return prices.size();
     }
 
     public List<DailyPrice> getDailyPricesSince(String ticker, LocalDate since) {
@@ -119,12 +87,10 @@ public class StockService {
         if (symbol == null) {
             throw new RuntimeException("Symbol not found: " + ticker);
         }
-
-        List<DailyPrice> allPrices = dailyPriceRepository.findBySymbolId(symbol.getId());
         String sinceStr = since.toString();
-        return allPrices.stream()
+        return dailyPriceRepository.findBySymbolId(symbol.getId()).stream()
                 .filter(p -> p.getDate().compareTo(sinceStr) >= 0)
-                .sorted((p1, p2) -> p2.getDate().compareTo(p1.getDate())) // Newest first
+                .sorted(Comparator.comparing(DailyPrice::getDate).reversed())
                 .toList();
     }
 }
