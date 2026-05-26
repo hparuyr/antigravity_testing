@@ -1,6 +1,5 @@
 package com.example.stockdb.service;
 
-import com.example.stockdb.model.Exchange;
 import com.example.stockdb.model.Symbol;
 import com.example.stockdb.repository.SymbolRepository;
 import org.slf4j.Logger;
@@ -8,15 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
-import jakarta.annotation.PostConstruct;
 
 @Component
 @Profile("!demo")
 public class StockScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(StockScheduler.class);
-    private static final List<String> TICKERS = List.of("AAPL", "IBM", "GOOGL", "MSFT", "META", "NFLX");
+    private static final long TICKER_DELAY_MS = 15_000;
 
     private final StockService stockService;
     private final SymbolRepository symbolRepository;
@@ -26,49 +25,22 @@ public class StockScheduler {
         this.symbolRepository = symbolRepository;
     }
 
-    @PostConstruct
-    public void init() {
-        log.info("Initializing StockScheduler...");
-        List<Exchange> exchanges = stockService.getAllExchanges();
-        Exchange exchange;
-        if (exchanges.isEmpty()) {
-            exchange = new Exchange();
-            exchange.setName("NASDAQ");
-            exchange.setCurrency("USD");
-            exchange.setMic("XNAS");
-            exchange.setTimezone("America/New_York");
-            exchange = stockService.createExchange(exchange);
-            log.info("Created default exchange: NASDAQ");
-        } else {
-            exchange = exchanges.get(0);
-        }
-        for (String ticker : TICKERS) {
-            if (symbolRepository.findByTicker(ticker) == null) {
-                Symbol symbol = new Symbol();
-                symbol.setTicker(ticker);
-                symbol.setName(ticker + " Inc.");
-                symbol.setType("Common Stock");
-                symbol.setExchange(exchange);
-                stockService.createSymbol(symbol);
-                log.info("Created symbol: {}", ticker);
-            }
-        }
-    }
-
-    @Scheduled(fixedRate = 60 * 60 * 1000)
+    @Scheduled(cron = "0 0 6 * * *")
     public void fetchDailyData() {
-        log.info("Starting scheduled daily stock data fetch...");
-        for (String ticker : TICKERS) {
+        List<Symbol> symbols = symbolRepository.findAll();
+        log.info("Starting scheduled daily fetch for {} symbols...", symbols.size());
+
+        for (Symbol symbol : symbols) {
             try {
-                int count = stockService.fetchAndStoreDailyPrices(ticker);
+                int count = stockService.fetchAndStoreDailyPrices(symbol.getTicker());
                 if (count > 0) {
-                    log.info("Fetched {} daily records for {}", count, ticker);
+                    log.info("Fetched {} daily records for {}", count, symbol.getTicker());
                 } else {
-                    log.warn("No daily records fetched for {}", ticker);
+                    log.warn("No daily records fetched for {}", symbol.getTicker());
                 }
-                Thread.sleep(15000);
+                Thread.sleep(TICKER_DELAY_MS);
             } catch (Exception e) {
-                log.error("Error fetching daily data for {}", ticker, e);
+                log.error("Error fetching daily data for {}", symbol.getTicker(), e);
             }
         }
         log.info("Completed scheduled daily stock data fetch.");

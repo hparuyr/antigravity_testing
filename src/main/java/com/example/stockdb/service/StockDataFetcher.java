@@ -5,6 +5,9 @@ import com.example.stockdb.model.DailyPrice;
 import java.util.List;
 
 public interface StockDataFetcher {
-    List<DailyPrice> fetchDailyPrices(String symbol, String outputSize);
 
+    String OUTPUT_SIZE_FULL = "full";
+    String OUTPUT_SIZE_COMPACT = "compact";
+
+    List<DailyPrice> fetchDailyPrices(String symbol, String outputSize);
 }
