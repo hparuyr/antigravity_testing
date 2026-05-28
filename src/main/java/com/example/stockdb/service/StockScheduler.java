@@ -12,12 +12,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Profile("!demo")
 public class StockScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(StockScheduler.class);
+
+    static final int INITIAL_BACKFILL_LIMIT = 25;
 
     @Value("${stock.api.delay}")
     private long tickerDelayMs;
@@ -32,14 +35,14 @@ public class StockScheduler {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initialFetch() {
-        log.info("Scheduling initial backfill on startup...");
+        log.info("Scheduling initial backfill ({} tickers) on startup...", INITIAL_BACKFILL_LIMIT);
         new Thread(() -> {
             try {
                 Thread.sleep(10_000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            fetchAllSymbols("Initial backfill");
+            fetchAllSymbols("Initial backfill", INITIAL_BACKFILL_LIMIT);
         }).start();
     }
 
@@ -49,8 +52,15 @@ public class StockScheduler {
     }
 
     private void fetchAllSymbols(String label) {
+        fetchAllSymbols(label, Integer.MAX_VALUE);
+    }
+
+    private void fetchAllSymbols(String label, int limit) {
         List<Symbol> symbols = symbolRepository.findAll();
-        log.info("{}: starting for {} symbols...", label, symbols.size());
+        if (symbols.size() > limit) {
+            symbols = symbols.stream().limit(limit).collect(Collectors.toList());
+        }
+        log.info("{}: starting for {}/{} symbols...", label, symbols.size(), symbolRepository.count());
 
         for (Symbol symbol : symbols) {
             try {
