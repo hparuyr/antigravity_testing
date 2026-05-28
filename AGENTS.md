@@ -25,7 +25,12 @@ mvn spring-boot:run -Dspring-boot.run.profiles=local,demo  # seeds all S&P 500 w
 | Build | `mvn clean package -DskipTests` |
 | Docker | `docker-compose up --build` |
 
-No tests (`src/test/` is empty).
+## Integration tests
+```bash
+export STOCK_API_KEY=your_key_here
+mvn test -Dtest=FinnhubConnectionTest   # verifies Finnhub /quote (free tier)
+mvn test -Dtest=AlphaVantageConnectionTest  # verifies Alpha Vantage daily prices (default)
+```
 
 ## Key env vars (all have defaults in `application.properties`)
 | Var | Default | Notes |
@@ -33,9 +38,9 @@ No tests (`src/test/` is empty).
 | `DATABASE_URL` | `jdbc:postgresql://localhost:5432/stock_db` | Neon connection string |
 | `DB_USERNAME` | `postgres` | Fallback when URL lacks credentials |
 | `DB_PASSWORD` | `postgres` | Fallback when URL lacks credentials |
-| `STOCK_DATA_FETCHER` | `finnhub` | Active fetcher: `finnhub`, `alphavantage`, or `demo` (profile) |
-| `STOCK_API_KEY` | `d8aq2u9r01qk20soblqgd8aq2u9r01qk20soblr0` | API key |
-| `STOCK_API_URL` | `https://finnhub.io/api/v1` | API endpoint |
+| `STOCK_DATA_FETCHER` | `alphavantage` | Active fetcher: `alphavantage` or `demo` (profile) |
+| `STOCK_API_KEY` | — | API key (Alpha Vantage: get at https://www.alphavantage.co/support/#api-key) |
+| `STOCK_API_URL` | `https://www.alphavantage.co/query` | API endpoint |
 | `PORT` | `8080` | Server port |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | Comma-separated origins |
 
@@ -63,8 +68,9 @@ All under `/api`; actuator health at `/actuator/health`.
 - `schema.sql` is SQLite syntax (`AUTOINCREMENT`) — reference only; JPA manages schema via `ddl-auto=update`
 - `spring.jpa.open-in-view=false` — `@Transactional` required on write operations (used in `StockService`)
 - CORS via `CorsConfig.java` — reads `cors.allowed.origins` env var, mapped on `/api/**`
-- Stock data fetcher: `StockDataFetcher` interface, selected via `stock.data.fetcher` property (`finnhub`, `alphavantage`, or `demo` profile)
-- `AlphaVantageService` and `FinnhubService` use the `RestTemplate` bean from `RestTemplateConfig` (injected)
+- Stock data fetcher: `StockDataFetcher` interface, selected via `stock.data.fetcher` property (`alphavantage` or `demo` profile)
+- `AlphaVantageService` uses the `RestTemplate` bean from `RestTemplateConfig` (injected)
+- Finnhub `stock/candle` requires a paid plan; the free tier only provides `/quote` (current OHLC) and `/stock/profile2`
 - Docker healthcheck uses `wget http://localhost:8080/actuator/health`
 
 ## Data sources
