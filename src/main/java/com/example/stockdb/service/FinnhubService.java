@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
@@ -51,7 +54,7 @@ public class FinnhubService implements StockDataFetcher {
         try {
             JsonNode root = restTemplate.getForObject(url, JsonNode.class);
             if (root == null || !"ok".equals(root.path("s").asText())) {
-                log.warn("No data or error for {}: {}", symbol, root);
+                log.warn("Finnhub returned error for {}: {}", symbol, root);
                 return List.of();
             }
 
@@ -67,8 +70,16 @@ public class FinnhubService implements StockDataFetcher {
                 prices.add(toDailyPrice(timestamps, opens, highs, lows, closes, volumes, i));
             }
             return prices;
+        } catch (HttpClientErrorException e) {
+            HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
+            log.error("Finnhub HTTP {} for {}: {} (url: {}?symbol={}&resolution=D&from={}&to={}&token=***)",
+                status.value(), symbol, e.getResponseBodyAsString(), apiUrl, symbol, from, now);
+            return List.of();
+        } catch (ResourceAccessException e) {
+            log.error("Finnhub connection error for {}: {} (url: {})", symbol, e.getMessage(), apiUrl);
+            return List.of();
         } catch (Exception e) {
-            log.error("Error fetching daily prices for {}", symbol, e);
+            log.error("Finnhub unexpected error for {}: {}", symbol, e.getMessage(), e);
             return List.of();
         }
     }

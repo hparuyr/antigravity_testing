@@ -7,7 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -50,7 +53,7 @@ public class AlphaVantageService implements StockDataFetcher {
 
             JsonNode timeSeries = root.path(TIME_SERIES_KEY);
             if (timeSeries.isMissingNode()) {
-                log.error("Error fetching data for {}: {}", symbol, root);
+                log.error("Alpha Vantage error for {}: {}", symbol, root);
                 return List.of();
             }
 
@@ -62,8 +65,16 @@ public class AlphaVantageService implements StockDataFetcher {
                 prices.add(toDailyPrice(field.getKey(), data));
             }
             return prices;
+        } catch (HttpClientErrorException e) {
+            HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
+            log.error("Alpha Vantage HTTP {} for {}: {} (url: {}?function=TIME_SERIES_DAILY&symbol={}&outputsize={}&apikey=***)",
+                status.value(), symbol, e.getResponseBodyAsString(), apiUrl, symbol, outputSize);
+            return List.of();
+        } catch (ResourceAccessException e) {
+            log.error("Alpha Vantage connection error for {}: {} (url: {})", symbol, e.getMessage(), apiUrl);
+            return List.of();
         } catch (Exception e) {
-            log.error("Error fetching daily prices for {}", symbol, e);
+            log.error("Alpha Vantage unexpected error for {}: {}", symbol, e.getMessage(), e);
             return List.of();
         }
     }

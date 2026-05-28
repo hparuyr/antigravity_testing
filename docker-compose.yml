@@ -14,7 +14,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
-      - STOCK_API_KEY=${STOCK_API_KEY:-HLNRH4Q2SC40WRHF}
+      - STOCK_API_KEY=${STOCK_API_KEY:-d8b0hdpr01qk20sp57fgd8b0hdpr01qk20sp57g0}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
     networks:
       - stock-network
