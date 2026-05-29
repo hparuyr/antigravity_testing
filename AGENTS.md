@@ -46,16 +46,50 @@ mvn test -Dtest=AlphaVantageConnectionTest  # verifies Alpha Vantage daily price
 
 ## API endpoints
 All under `/api`; actuator health at `/actuator/health`.
+Swagger UI at `http://localhost:18080/swagger-ui.html` (local) or `/swagger-ui.html` — fully documented with examples.
+
+### Core stock data
 | Method | Path | Notes |
 |--------|------|-------|
 | GET | `/` | Health/status |
 | GET/POST | `/exchanges` | List / create |
+| GET | `/exchanges/{id}` | Get exchange by ID |
 | GET/POST | `/symbols` | List / create |
 | GET | `/exchanges/{id}/symbols` | Symbols by exchange |
 | GET | `/symbols/{id}/prices` | Daily prices |
 | POST | `/prices` | Add price record |
-| GET | `/daily/{ticker}?since=YYYY-MM-DD` | Daily prices since date |
-| GET | `/intraday/{ticker}?since=YYYY-MM-DDTHH:mm:ss` | Intraday since timestamp |
+| GET | `/daily/{ticker}?since=YYYY-MM-DD` | Daily prices since date (DB query, no API call) |
+
+### Ingestion (data loading)
+| Method | Path | Notes |
+|--------|------|-------|
+| POST | `/ingest/{ticker}` | Fetch & store prices for one ticker from external API |
+| POST | `/ingest` | Batch ingest (body: `{"tickers":["AAPL","MSFT"]}` or `{"all":true}`) |
+| GET | `/ingest/{ticker}/status` | Check stored data for a ticker (no API call) |
+
+### AI context
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/context/{ticker}?since=YYYY-MM-DD` | Complete stock profile: metadata + snapshot + 10 indicators + price history |
+
+### Technical analysis (under `/api/analytics`)
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/{ticker}/returns?since=` | Daily simple & log returns |
+| GET | `/{ticker}/sma?period=20&since=` | Simple Moving Average |
+| GET | `/{ticker}/ema?period=20&since=` | Exponential Moving Average |
+| GET | `/{ticker}/volatility?period=21&since=` | Rolling volatility |
+| GET | `/{ticker}/rsi?period=14&since=` | Relative Strength Index |
+| GET | `/{ticker}/macd?since=` | MACD line, signal, histogram |
+| GET | `/{ticker}/bollinger?period=20&multiplier=2.0&since=` | Bollinger Bands |
+| GET | `/{ticker}/vwap?since=` | Volume-Weighted Average Price |
+| GET | `/correlation?ticker1=AAPL&ticker2=MSFT&since=` | Pairwise Pearson correlation |
+| GET | `/{ticker}/beta?market=SPY&since=` | Beta, Alpha, R-squared |
+
+### Stock similarity engine
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/{ticker}/mimics?since=&limit=20` | Find top-N most correlated S&P 500 stocks (server-side batch, single call) |
 
 ## Scheduled tasks
 - **Daily data**: daily at 6:00 AM (all S&P 500 tickers in DB)
@@ -72,6 +106,7 @@ All under `/api`; actuator health at `/actuator/health`.
 - `AlphaVantageService` uses the `RestTemplate` bean from `RestTemplateConfig` (injected)
 - Finnhub `stock/candle` requires a paid plan; the free tier only provides `/quote` (current OHLC) and `/stock/profile2`
 - Docker healthcheck uses `wget http://localhost:8080/actuator/health`
+- **Swagger UI**: `springdoc-openapi-starter-webmvc-ui` (v2.6.0) — UI at `/swagger-ui.html`, spec at `/v3/api-docs`. All DTOs have `@Schema` examples for one-click "Try it out".
 
 ## Data sources
 - **S&P 500 list**: `src/main/resources/sp500.csv` — 503 tickers with names and exchange MICs
