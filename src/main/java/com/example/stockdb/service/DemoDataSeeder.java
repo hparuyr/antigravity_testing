@@ -4,60 +4,73 @@ import com.example.stockdb.model.Exchange;
 import com.example.stockdb.model.Symbol;
 import com.example.stockdb.repository.ExchangeRepository;
 import com.example.stockdb.repository.SymbolRepository;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import jakarta.annotation.PostConstruct;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Profile("demo")
 public class DemoDataSeeder {
 
     private static final Logger log = LoggerFactory.getLogger(DemoDataSeeder.class);
-    private static final List<String> TICKERS = List.of("AAPL", "IBM", "GOOGL", "MSFT", "META", "NFLX");
 
     private final StockService stockService;
     private final ExchangeRepository exchangeRepository;
     private final SymbolRepository symbolRepository;
+    private final Sp500Loader sp500Loader;
 
-    public DemoDataSeeder(StockService stockService, ExchangeRepository exchangeRepository, SymbolRepository symbolRepository) {
+    public DemoDataSeeder(StockService stockService, ExchangeRepository exchangeRepository,
+                          SymbolRepository symbolRepository, Sp500Loader sp500Loader) {
         this.stockService = stockService;
         this.exchangeRepository = exchangeRepository;
         this.symbolRepository = symbolRepository;
+        this.sp500Loader = sp500Loader;
     }
 
     @PostConstruct
+    @Transactional
     public void seed() {
         log.info("Seeding demo data...");
-        List<Exchange> exchanges = exchangeRepository.findAll();
-        Exchange exchange;
-        if (exchanges.isEmpty()) {
-            exchange = new Exchange();
-            exchange.setName("NASDAQ");
-            exchange.setCurrency("USD");
-            exchange.setMic("XNAS");
-            exchange.setTimezone("America/New_York");
-            exchange = exchangeRepository.save(exchange);
-            log.info("Created default exchange: NASDAQ");
-        } else {
-            exchange = exchanges.get(0);
-        }
-        for (String ticker : TICKERS) {
-            Symbol symbol = symbolRepository.findByTicker(ticker);
-            if (symbol == null) {
-                symbol = new Symbol();
-                symbol.setTicker(ticker);
-                symbol.setName(ticker + " Inc.");
+        Map<String, Exchange> exchangeCache = new LinkedHashMap<>();
+
+        for (Sp500Loader.Sp500Entry entry : sp500Loader.loadAll()) {
+            Exchange exchange = exchangeCache.computeIfAbsent(
+                entry.exchangeMic(), mic -> getOrCreateExchange(mic));
+
+            if (symbolRepository.findByTicker(entry.ticker()) == null) {
+                Symbol symbol = new Symbol();
+                symbol.setTicker(entry.ticker());
+                symbol.setName(entry.name());
                 symbol.setType("Common Stock");
                 symbol.setExchange(exchange);
                 symbolRepository.save(symbol);
-                log.info("Created symbol: {}", ticker);
             }
-            stockService.fetchAndStoreDailyPrices(ticker);
+
+            stockService.fetchAndStoreDailyPrices(entry.ticker());
         }
         log.info("Demo data seeding complete.");
+    }
+
+    private Exchange getOrCreateExchange(String mic) {
+        Exchange exchange = exchangeRepository.findByMic(mic);
+        if (exchange == null) {
+            String name = "XNAS".equals(mic) ? "NASDAQ" : "NYSE";
+            String tz = "America/New_York";
+            exchange = new Exchange();
+            exchange.setMic(mic);
+            exchange.setName(name);
+            exchange.setCurrency("USD");
+            exchange.setTimezone(tz);
+            exchangeRepository.save(exchange);
+            log.info("Created exchange: {} ({})", name, mic);
+        }
+        return exchange;
     }
 }

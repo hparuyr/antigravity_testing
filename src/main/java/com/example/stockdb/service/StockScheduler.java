@@ -1,22 +1,29 @@
 package com.example.stockdb.service;
 
-import com.example.stockdb.model.Exchange;
 import com.example.stockdb.model.Symbol;
 import com.example.stockdb.repository.SymbolRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
-import jakarta.annotation.PostConstruct;
+import java.util.stream.Collectors;
 
 @Component
 @Profile("!demo")
 public class StockScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(StockScheduler.class);
-    private static final List<String> TICKERS = List.of("AAPL", "IBM", "GOOGL", "MSFT", "META", "NFLX");
+
+    static final int INITIAL_BACKFILL_LIMIT = 25;
+
+    @Value("${stock.api.delay}")
+    private long tickerDelayMs;
 
     private final StockService stockService;
     private final SymbolRepository symbolRepository;
@@ -26,51 +33,48 @@ public class StockScheduler {
         this.symbolRepository = symbolRepository;
     }
 
-    @PostConstruct
-    public void init() {
-        log.info("Initializing StockScheduler...");
-        List<Exchange> exchanges = stockService.getAllExchanges();
-        Exchange exchange;
-        if (exchanges.isEmpty()) {
-            exchange = new Exchange();
-            exchange.setName("NASDAQ");
-            exchange.setCurrency("USD");
-            exchange.setMic("XNAS");
-            exchange.setTimezone("America/New_York");
-            exchange = stockService.createExchange(exchange);
-            log.info("Created default exchange: NASDAQ");
-        } else {
-            exchange = exchanges.get(0);
-        }
-        for (String ticker : TICKERS) {
-            if (symbolRepository.findByTicker(ticker) == null) {
-                Symbol symbol = new Symbol();
-                symbol.setTicker(ticker);
-                symbol.setName(ticker + " Inc.");
-                symbol.setType("Common Stock");
-                symbol.setExchange(exchange);
-                stockService.createSymbol(symbol);
-                log.info("Created symbol: {}", ticker);
+    @EventListener(ApplicationReadyEvent.class)
+    public void initialFetch() {
+        log.info("Scheduling initial backfill ({} tickers) on startup...", INITIAL_BACKFILL_LIMIT);
+        new Thread(() -> {
+            try {
+                Thread.sleep(10_000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-        }
+            fetchAllSymbols("Initial backfill", INITIAL_BACKFILL_LIMIT);
+        }).start();
     }
 
-    @Scheduled(fixedRate = 60 * 60 * 1000)
+    @Scheduled(cron = "0 0 6 * * *")
     public void fetchDailyData() {
-        log.info("Starting scheduled daily stock data fetch...");
-        for (String ticker : TICKERS) {
+        fetchAllSymbols("Scheduled daily fetch");
+    }
+
+    private void fetchAllSymbols(String label) {
+        fetchAllSymbols(label, Integer.MAX_VALUE);
+    }
+
+    private void fetchAllSymbols(String label, int limit) {
+        List<Symbol> symbols = symbolRepository.findAll();
+        if (symbols.size() > limit) {
+            symbols = symbols.stream().limit(limit).collect(Collectors.toList());
+        }
+        log.info("{}: starting for {}/{} symbols...", label, symbols.size(), symbolRepository.count());
+
+        for (Symbol symbol : symbols) {
             try {
-                int count = stockService.fetchAndStoreDailyPrices(ticker);
+                int count = stockService.fetchAndStoreDailyPrices(symbol.getTicker());
                 if (count > 0) {
-                    log.info("Fetched {} daily records for {}", count, ticker);
+                    log.info("{}: fetched {} daily records for {}", label, count, symbol.getTicker());
                 } else {
-                    log.warn("No daily records fetched for {}", ticker);
+                    log.warn("{}: no daily records fetched for {}", label, symbol.getTicker());
                 }
-                Thread.sleep(15000);
+                Thread.sleep(tickerDelayMs);
             } catch (Exception e) {
-                log.error("Error fetching daily data for {}", ticker, e);
+                log.error("{}: error fetching daily data for {}", label, symbol.getTicker(), e);
             }
         }
-        log.info("Completed scheduled daily stock data fetch.");
+        log.info("{}: complete.", label);
     }
 }

@@ -2,7 +2,8 @@
 
 ## Quick start
 ```bash
-mvn spring-boot:run     # backend on :8080 (default: local profile, H2 in-memory, no DB needed)
+mvn spring-boot:run                                   # backend on :18080 (local profile, H2, no DB needed)
+mvn spring-boot:run -Dspring-boot.run.profiles=local,demo  # seeds all S&P 500 with demo data (~2 min startup)
 
 # Docker (production with PostgreSQL):
 #   docker-compose up --build
@@ -24,7 +25,12 @@ mvn spring-boot:run     # backend on :8080 (default: local profile, H2 in-memory
 | Build | `mvn clean package -DskipTests` |
 | Docker | `docker-compose up --build` |
 
-No tests (`src/test/` is empty).
+## Integration tests
+```bash
+export STOCK_API_KEY=your_key_here
+mvn test -Dtest=FinnhubConnectionTest   # verifies Finnhub /quote (free tier)
+mvn test -Dtest=AlphaVantageConnectionTest  # verifies Alpha Vantage daily prices (default)
+```
 
 ## Key env vars (all have defaults in `application.properties`)
 | Var | Default | Notes |
@@ -32,8 +38,9 @@ No tests (`src/test/` is empty).
 | `DATABASE_URL` | `jdbc:postgresql://localhost:5432/stock_db` | Neon connection string |
 | `DB_USERNAME` | `postgres` | Fallback when URL lacks credentials |
 | `DB_PASSWORD` | `postgres` | Fallback when URL lacks credentials |
-| `STOCK_API_KEY` | `HLNRH4Q2SC40WRHF` | Alpha Vantage key |
-| `STOCK_API_URL` | `https://www.alphavantage.co/query` | Alpha Vantage endpoint |
+| `STOCK_DATA_FETCHER` | `alphavantage` | Active fetcher: `alphavantage` or `demo` (profile) |
+| `STOCK_API_KEY` | — | API key (Alpha Vantage: get at https://www.alphavantage.co/support/#api-key) |
+| `STOCK_API_URL` | `https://www.alphavantage.co/query` | API endpoint |
 | `PORT` | `8080` | Server port |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | Comma-separated origins |
 
@@ -51,15 +58,22 @@ All under `/api`; actuator health at `/actuator/health`.
 | GET | `/intraday/{ticker}?since=YYYY-MM-DDTHH:mm:ss` | Intraday since timestamp |
 
 ## Scheduled tasks
-- **Daily data**: every 1h (AAPL, IBM, GOOGL, MSFT, META, NFLX)
-- **Intraday data**: every 20min (1min interval)
-- 15s delay between tickers (Alpha Vantage rate limit)
-- On startup, auto-creates NASDAQ exchange (XNAS, USD, America/New_York) + default tickers
+- **Daily data**: daily at 6:00 AM (all S&P 500 tickers in DB)
+- **Intraday data**: not implemented
+- 15s delay between tickers (API rate limit)
+- `ExchangeSymbolSeeder` creates NASDAQ (XNAS), NYSE (XNYS) + all 503 S&P 500 symbols on startup (`!demo` profile)
+- `DemoDataSeeder` does the same for `demo` profile + fetches all price data
 
 ## Notable details
 - `schema.sql` is SQLite syntax (`AUTOINCREMENT`) — reference only; JPA manages schema via `ddl-auto=update`
 - `spring.jpa.open-in-view=false` — `@Transactional` required on write operations (used in `StockService`)
 - CORS via `CorsConfig.java` — reads `cors.allowed.origins` env var, mapped on `/api/**`
-- Stock data fetcher: `StockDataFetcher` interface → `AlphaVantageService` (uses `RestTemplate` + `Jackson`)
-- `AlphaVantageService` creates its own `RestTemplate` and `ObjectMapper` (not injected)
+- Stock data fetcher: `StockDataFetcher` interface, selected via `stock.data.fetcher` property (`alphavantage` or `demo` profile)
+- `AlphaVantageService` uses the `RestTemplate` bean from `RestTemplateConfig` (injected)
+- Finnhub `stock/candle` requires a paid plan; the free tier only provides `/quote` (current OHLC) and `/stock/profile2`
 - Docker healthcheck uses `wget http://localhost:8080/actuator/health`
+
+## Data sources
+- **S&P 500 list**: `src/main/resources/sp500.csv` — 503 tickers with names and exchange MICs
+- **S&P 500 list loader**: `Sp500Loader` parses the CSV; `ExchangeSymbolSeeder` seeds exchanges + symbols on startup
+- **Demo data**: `DemoStockDataFetcher` generates 365 days of synthetic OHLCV for every S&P 500 ticker

@@ -1,0 +1,504 @@
+ticker,name,exchange
+A,Agilent Technologies,XNYS
+AAPL,Apple Inc.,XNAS
+ABBV,AbbVie,XNYS
+ABNB,Airbnb,XNAS
+ABT,Abbott Laboratories,XNYS
+ACGL,Arch Capital Group,XNYS
+ACN,Accenture,XNYS
+ADBE,Adobe Inc.,XNAS
+ADI,Analog Devices,XNAS
+ADM,Archer Daniels Midland,XNYS
+ADP,Automatic Data Processing,XNAS
+ADSK,Autodesk,XNAS
+AEE,Ameren,XNYS
+AEP,American Electric Power,XNYS
+AES,AES Corporation,XNYS
+AFL,Aflac,XNYS
+AIG,American International Group,XNYS
+AIZ,Assurant,XNYS
+AJG,Arthur J. Gallagher & Co.,XNYS
+AKAM,Akamai Technologies,XNAS
+ALB,Albemarle Corporation,XNAS
+ALGN,Align Technology,XNAS
+ALL,Allstate,XNYS
+ALLE,Allegion,XNYS
+AMAT,Applied Materials,XNAS
+AMCR,Amcor,XNYS
+AMD,Advanced Micro Devices,XNAS
+AME,Ametek,XNYS
+AMGN,Amgen,XNAS
+AMP,Ameriprise Financial,XNYS
+AMT,American Tower,XNYS
+AMZN,Amazon,XNAS
+ANET,Arista Networks,XNAS
+AON,Aon plc,XNYS
+AOS,A. O. Smith,XNYS
+APA,APA Corporation,XNYS
+APD,Air Products,XNYS
+APH,Amphenol,XNYS
+APO,Apollo Global Management,XNYS
+APP,AppLovin,XNAS
+APTV,Aptiv,XNYS
+ARE,Alexandria Real Estate Equities,XNYS
+ARES,Ares Management,XNYS
+ATO,Atmos Energy,XNYS
+AVB,AvalonBay Communities,XNYS
+AVGO,Broadcom,XNAS
+AVY,Avery Dennison,XNYS
+AWK,American Water Works,XNYS
+AXON,Axon Enterprise,XNAS
+AXP,American Express,XNYS
+AZO,AutoZone,XNAS
+BA,Boeing,XNYS
+BAC,Bank of America,XNYS
+BALL,Ball Corporation,XNYS
+BAX,Baxter International,XNYS
+BBY,Best Buy,XNYS
+BDX,Becton Dickinson,XNYS
+BEN,Franklin Resources,XNYS
+BF.B,Brown–Forman,XNYS
+BG,Bunge Global,XNYS
+BIIB,Biogen,XNAS
+BKNG,Booking Holdings,XNAS
+BKR,Baker Hughes,XNYS
+BLDR,Builders FirstSource,XNAS
+BLK,BlackRock,XNYS
+BMY,Bristol Myers Squibb,XNYS
+BNY,BNY Mellon,XNYS
+BR,Broadridge Financial Solutions,XNAS
+BRK.B,Berkshire Hathaway,XNYS
+BRO,Brown & Brown,XNAS
+BSX,Boston Scientific,XNYS
+BX,Blackstone Inc.,XNYS
+BXP,"BXP, Inc.",XNYS
+C,Citigroup,XNYS
+CAG,Conagra Brands,XNYS
+CAH,Cardinal Health,XNYS
+CARR,Carrier Global,XNYS
+CASY,Casey's,XNYS
+CAT,Caterpillar Inc.,XNYS
+CB,Chubb Limited,XNYS
+CBOE,Cboe Global Markets,XNAS
+CBRE,CBRE Group,XNYS
+CCI,Crown Castle,XNYS
+CCL,Carnival Corporation,XNYS
+CDNS,Cadence Design Systems,XNAS
+CDW,CDW Corporation,XNAS
+CEG,Constellation Energy,XNAS
+CF,CF Industries,XNYS
+CFG,Citizens Financial Group,XNYS
+CHD,Church & Dwight,XNYS
+CHRW,C.H. Robinson,XNAS
+CHTR,Charter Communications,XNAS
+CI,Cigna,XNYS
+CIEN,Ciena,XNYS
+CINF,Cincinnati Financial,XNAS
+CL,Colgate-Palmolive,XNYS
+CLX,Clorox,XNYS
+CMCSA,Comcast,XNAS
+CME,CME Group,XNYS
+CMG,Chipotle Mexican Grill,XNAS
+CMI,Cummins,XNYS
+CMS,CMS Energy,XNYS
+CNC,Centene Corporation,XNYS
+CNP,CenterPoint Energy,XNYS
+COF,Capital One,XNYS
+COHR,Coherent Corp.,XNAS
+COIN,Coinbase,XNAS
+COO,Cooper Companies (The),XNYS
+COP,ConocoPhillips,XNYS
+COR,Cencora,XNYS
+COST,Costco,XNAS
+CPAY,Corpay,XNAS
+CPB,Campbell's Company (The),XNYS
+CPRT,Copart,XNAS
+CPT,Camden Property Trust,XNYS
+CRH,CRH plc,XNYS
+CRL,Charles River Laboratories,XNAS
+CRM,Salesforce,XNYS
+CRWD,CrowdStrike,XNAS
+CSCO,Cisco,XNAS
+CSGP,CoStar Group,XNAS
+CSX,CSX Corporation,XNYS
+CTAS,Cintas,XNAS
+CTSH,Cognizant,XNAS
+CTVA,Corteva,XNYS
+CVNA,Carvana,XNYS
+CVS,CVS Health,XNYS
+CVX,Chevron Corporation,XNYS
+D,Dominion Energy,XNYS
+DAL,Delta Air Lines,XNYS
+DASH,DoorDash,XNAS
+DD,DuPont,XNYS
+DDOG,Datadog,XNAS
+DE,Deere & Company,XNYS
+DECK,Deckers Brands,XNAS
+DELL,Dell Technologies,XNAS
+DG,Dollar General,XNAS
+DGX,Quest Diagnostics,XNYS
+DHI,D. R. Horton,XNYS
+DHR,Danaher Corporation,XNYS
+DIS,Walt Disney Company (The),XNYS
+DLR,Digital Realty,XNYS
+DLTR,Dollar Tree,XNAS
+DOC,Healthpeak Properties,XNYS
+DOV,Dover Corporation,XNYS
+DOW,Dow Inc.,XNYS
+DPZ,Domino's,XNAS
+DRI,Darden Restaurants,XNYS
+DTE,DTE Energy,XNYS
+DUK,Duke Energy,XNYS
+DVA,DaVita,XNYS
+DVN,Devon Energy,XNYS
+DXCM,Dexcom,XNAS
+EA,Electronic Arts,XNAS
+EBAY,eBay Inc.,XNAS
+ECL,Ecolab,XNYS
+ED,Consolidated Edison,XNYS
+EFX,Equifax,XNYS
+EG,Everest Group,XNYS
+EIX,Edison International,XNYS
+EL,Estée Lauder Companies (The),XNYS
+ELV,Elevance Health,XNYS
+EME,Emcor,XNYS
+EMR,Emerson Electric,XNYS
+EOG,EOG Resources,XNYS
+EPAM,EPAM Systems,XNAS
+EQIX,Equinix,XNAS
+EQR,Equity Residential,XNYS
+EQT,EQT Corporation,XNYS
+ERIE,Erie Indemnity,XNAS
+ES,Eversource Energy,XNYS
+ESS,Essex Property Trust,XNYS
+ETN,Eaton Corporation,XNYS
+ETR,Entergy,XNYS
+EVRG,Evergy,XNYS
+EW,Edwards Lifesciences,XNYS
+EXC,Exelon,XNAS
+EXE,Expand Energy,XNYS
+EXPD,Expeditors International,XNAS
+EXPE,Expedia Group,XNAS
+EXR,Extra Space Storage,XNYS
+F,Ford Motor Company,XNYS
+FANG,Diamondback Energy,XNAS
+FAST,Fastenal,XNAS
+FCX,Freeport-McMoRan,XNYS
+FDS,FactSet,XNAS
+FDX,FedEx,XNYS
+FE,FirstEnergy,XNYS
+FFIV,"F5, Inc.",XNAS
+FICO,Fair Isaac,XNAS
+FIS,Fidelity National Information Services,XNYS
+FISV,Fiserv,XNAS
+FITB,Fifth Third Bancorp,XNAS
+FIX,Comfort Systems USA,XNAS
+FOX,Fox Corporation (Class B),XNAS
+FOXA,Fox Corporation (Class A),XNAS
+FRT,Federal Realty Investment Trust,XNYS
+FSLR,First Solar,XNAS
+FTNT,Fortinet,XNAS
+FTV,Fortive,XNYS
+GD,General Dynamics,XNYS
+GDDY,GoDaddy,XNAS
+GE,GE Aerospace,XNYS
+GEHC,GE HealthCare,XNAS
+GEN,Gen Digital,XNAS
+GEV,GE Vernova,XNYS
+GILD,Gilead Sciences,XNAS
+GIS,General Mills,XNYS
+GL,Globe Life,XNYS
+GLW,Corning Inc.,XNYS
+GM,General Motors,XNYS
+GNRC,Generac,XNAS
+GOOG,Alphabet Inc. (Class C),XNAS
+GOOGL,Alphabet Inc. (Class A),XNAS
+GPC,Genuine Parts Company,XNYS
+GPN,Global Payments,XNYS
+GRMN,Garmin,XNAS
+GS,Goldman Sachs,XNYS
+GWW,W. W. Grainger,XNAS
+HAL,Halliburton,XNYS
+HAS,Hasbro,XNAS
+HBAN,Huntington Bancshares,XNAS
+HCA,HCA Healthcare,XNYS
+HD,Home Depot (The),XNYS
+HIG,Hartford (The),XNYS
+HII,Huntington Ingalls Industries,XNYS
+HLT,Hilton Worldwide,XNYS
+HON,Honeywell,XNAS
+HOOD,Robinhood Markets,XNAS
+HPE,Hewlett Packard Enterprise,XNAS
+HPQ,HP Inc.,XNAS
+HRL,Hormel Foods,XNYS
+HSIC,Henry Schein,XNYS
+HST,Host Hotels & Resorts,XNAS
+HSY,Hershey Company (The),XNYS
+HUBB,Hubbell Incorporated,XNAS
+HUM,Humana,XNYS
+HWM,Howmet Aerospace,XNYS
+IBKR,Interactive Brokers,XNYS
+IBM,IBM,XNAS
+ICE,Intercontinental Exchange,XNYS
+IDXX,Idexx Laboratories,XNAS
+IEX,IDEX Corporation,XNAS
+IFF,International Flavors & Fragrances,XNYS
+INCY,Incyte,XNAS
+INTC,Intel,XNAS
+INTU,Intuit,XNAS
+INVH,Invitation Homes,XNYS
+IP,International Paper,XNYS
+IQV,IQVIA,XNYS
+IR,Ingersoll Rand,XNAS
+IRM,Iron Mountain,XNAS
+ISRG,Intuitive Surgical,XNAS
+IT,Gartner,XNAS
+ITW,Illinois Tool Works,XNYS
+IVZ,Invesco,XNYS
+J,Jacobs Solutions,XNYS
+JBHT,J.B. Hunt,XNAS
+JBL,Jabil,XNAS
+JCI,Johnson Controls,XNYS
+JKHY,Jack Henry & Associates,XNAS
+JNJ,Johnson & Johnson,XNYS
+JPM,JPMorgan Chase,XNYS
+KDP,Keurig Dr Pepper,XNAS
+KEY,KeyCorp,XNYS
+KEYS,Keysight Technologies,XNAS
+KHC,Kraft Heinz,XNAS
+KIM,Kimco Realty,XNYS
+KKR,KKR & Co.,XNYS
+KLAC,KLA Corporation,XNAS
+KMB,Kimberly-Clark,XNYS
+KMI,Kinder Morgan,XNYS
+KO,Coca-Cola Company (The),XNYS
+KR,Kroger,XNYS
+KVUE,Kenvue,XNYS
+L,Loews Corporation,XNYS
+LDOS,Leidos,XNYS
+LEN,Lennar,XNYS
+LH,Labcorp,XNYS
+LHX,L3Harris,XNYS
+LII,Lennox International,XNAS
+LIN,Linde plc,XNYS
+LITE,Lumentum,XNAS
+LLY,Lilly (Eli),XNYS
+LMT,Lockheed Martin,XNYS
+LNT,Alliant Energy,XNAS
+LOW,Lowe's,XNYS
+LRCX,Lam Research,XNAS
+LULU,Lululemon Athletica,XNAS
+LUV,Southwest Airlines,XNYS
+LVS,Las Vegas Sands,XNAS
+LYB,LyondellBasell,XNYS
+LYV,Live Nation Entertainment,XNAS
+MA,Mastercard,XNYS
+MAA,Mid-America Apartment Communities,XNAS
+MAR,Marriott International,XNAS
+MAS,Masco,XNYS
+MCD,McDonald's,XNYS
+MCHP,Microchip Technology,XNAS
+MCK,McKesson Corporation,XNYS
+MCO,Moody's Corporation,XNYS
+MDLZ,Mondelez International,XNAS
+MDT,Medtronic,XNYS
+MET,MetLife,XNYS
+META,Meta Platforms,XNAS
+MGM,MGM Resorts,XNAS
+MKC,McCormick & Company,XNYS
+MLM,Martin Marietta Materials,XNYS
+MMM,3M,XNYS
+MNST,Monster Beverage,XNAS
+MO,Altria,XNYS
+MOS,Mosaic Company (The),XNYS
+MPC,Marathon Petroleum,XNYS
+MPWR,Monolithic Power Systems,XNAS
+MRK,Merck & Co.,XNYS
+MRNA,Moderna,XNAS
+MRSH,Marsh McLennan,XNYS
+MS,Morgan Stanley,XNYS
+MSCI,MSCI Inc.,XNAS
+MSFT,Microsoft,XNAS
+MSI,Motorola Solutions,XNYS
+MTB,M&T Bank,XNYS
+MTD,Mettler Toledo,XNYS
+MU,Micron Technology,XNAS
+NCLH,Norwegian Cruise Line Holdings,XNYS
+NDAQ,"Nasdaq, Inc.",XNAS
+NDSN,Nordson Corporation,XNYS
+NEE,NextEra Energy,XNYS
+NEM,Newmont,XNYS
+NFLX,Netflix,XNAS
+NI,NiSource,XNYS
+NKE,"Nike, Inc.",XNYS
+NOC,Northrop Grumman,XNYS
+NOW,ServiceNow,XNAS
+NRG,NRG Energy,XNYS
+NSC,Norfolk Southern,XNYS
+NTAP,NetApp,XNAS
+NTRS,Northern Trust,XNAS
+NUE,Nucor,XNYS
+NVDA,Nvidia,XNAS
+NVR,"NVR, Inc.",XNYS
+NWS,News Corp (Class B),XNYS
+NWSA,News Corp (Class A),XNYS
+NXPI,NXP Semiconductors,XNAS
+O,Realty Income,XNYS
+ODFL,Old Dominion,XNAS
+OKE,Oneok,XNYS
+OMC,Omnicom Group,XNYS
+ON,ON Semiconductor,XNAS
+ORCL,Oracle Corporation,XNAS
+ORLY,O’Reilly Automotive,XNAS
+OTIS,Otis Worldwide,XNYS
+OXY,Occidental Petroleum,XNYS
+PANW,Palo Alto Networks,XNAS
+PAYX,Paychex,XNAS
+PCAR,Paccar,XNAS
+PCG,PG&E Corporation,XNYS
+PEG,Public Service Enterprise Group,XNYS
+PEP,PepsiCo,XNAS
+PFE,Pfizer,XNYS
+PFG,Principal Financial Group,XNYS
+PG,Procter & Gamble,XNYS
+PGR,Progressive Corporation,XNYS
+PH,Parker Hannifin,XNYS
+PHM,PulteGroup,XNYS
+PKG,Packaging Corporation of America,XNYS
+PLD,Prologis,XNYS
+PLTR,Palantir Technologies,XNAS
+PM,Philip Morris International,XNYS
+PNC,PNC Financial Services,XNYS
+PNR,Pentair,XNYS
+PNW,Pinnacle West Capital,XNYS
+PODD,Insulet Corporation,XNYS
+POOL,Pool Corporation,XNAS
+PPG,PPG Industries,XNYS
+PPL,PPL Corporation,XNYS
+PRU,Prudential Financial,XNYS
+PSA,Public Storage,XNYS
+PSKY,Paramount Skydance Corporation,XNYS
+PSX,Phillips 66,XNYS
+PTC,PTC Inc.,XNAS
+PWR,Quanta Services,XNAS
+PYPL,PayPal,XNAS
+Q,Qnity Electronics,XNYS
+QCOM,Qualcomm,XNAS
+RCL,Royal Caribbean Group,XNYS
+REG,Regency Centers,XNYS
+REGN,Regeneron Pharmaceuticals,XNAS
+RF,Regions Financial Corporation,XNYS
+RJF,Raymond James Financial,XNAS
+RL,Ralph Lauren Corporation,XNYS
+RMD,ResMed,XNAS
+ROK,Rockwell Automation,XNYS
+ROL,"Rollins, Inc.",XNAS
+ROP,Roper Technologies,XNAS
+ROST,Ross Stores,XNAS
+RSG,Republic Services,XNYS
+RTX,RTX Corporation,XNYS
+RVTY,Revvity,XNAS
+SATS,EchoStar,XNYS
+SBAC,SBA Communications,XNAS
+SBUX,Starbucks,XNAS
+SCHW,Charles Schwab Corporation,XNAS
+SHW,Sherwin-Williams,XNYS
+SJM,J.M. Smucker Company (The),XNYS
+SLB,Schlumberger,XNYS
+SMCI,Supermicro,XNAS
+SNA,Snap-on,XNAS
+SNDK,Sandisk,XNAS
+SNPS,Synopsys,XNAS
+SO,Southern Company,XNYS
+SOLV,Solventum,XNYS
+SPG,Simon Property Group,XNYS
+SPGI,S&P Global,XNAS
+SRE,Sempra,XNYS
+STE,Steris,XNYS
+STLD,Steel Dynamics,XNAS
+STT,State Street Corporation,XNYS
+STX,Seagate Technology,XNAS
+STZ,Constellation Brands,XNYS
+SW,Smurfit Westrock,XNYS
+SWK,Stanley Black & Decker,XNYS
+SWKS,Skyworks Solutions,XNAS
+SYF,Synchrony Financial,XNAS
+SYK,Stryker Corporation,XNYS
+SYY,Sysco,XNAS
+T,AT&T,XNYS
+TAP,Molson Coors Beverage Company,XNYS
+TDG,TransDigm Group,XNYS
+TDY,Teledyne Technologies,XNYS
+TECH,Bio-Techne,XNAS
+TEL,TE Connectivity,XNAS
+TER,Teradyne,XNAS
+TFC,Truist Financial,XNAS
+TGT,Target Corporation,XNAS
+TJX,TJX Companies,XNAS
+TKO,TKO Group Holdings,XNYS
+TMO,Thermo Fisher Scientific,XNAS
+TMUS,T-Mobile US,XNAS
+TPL,Texas Pacific Land Corporation,XNYS
+TPR,"Tapestry, Inc.",XNAS
+TRGP,Targa Resources,XNYS
+TRMB,Trimble Inc.,XNAS
+TROW,T. Rowe Price,XNAS
+TRV,Travelers Companies (The),XNYS
+TSCO,Tractor Supply,XNAS
+TSLA,"Tesla, Inc.",XNAS
+TSN,Tyson Foods,XNYS
+TT,Trane Technologies,XNAS
+TTD,Trade Desk (The),XNAS
+TTWO,Take-Two Interactive,XNAS
+TXN,Texas Instruments,XNAS
+TXT,Textron,XNYS
+TYL,Tyler Technologies,XNAS
+UAL,United Airlines Holdings,XNAS
+UBER,Uber,XNAS
+UDR,"UDR, Inc.",XNYS
+UHS,Universal Health Services,XNYS
+ULTA,Ulta Beauty,XNAS
+UNH,UnitedHealth Group,XNYS
+UNP,Union Pacific Corporation,XNYS
+UPS,United Parcel Service,XNYS
+URI,United Rentals,XNYS
+USB,U.S. Bancorp,XNYS
+V,Visa Inc.,XNAS
+VEEV,Veeva Systems,XNAS
+VICI,Vici Properties,XNAS
+VLO,Valero Energy,XNYS
+VLTO,Veralto,XNAS
+VMC,Vulcan Materials Company,XNYS
+VRSK,Verisk Analytics,XNAS
+VRSN,Verisign,XNAS
+VRT,Vertiv,XNAS
+VRTX,Vertex Pharmaceuticals,XNAS
+VST,Vistra Corp.,XNAS
+VTR,Ventas,XNYS
+VTRS,Viatris,XNAS
+VZ,Verizon,XNYS
+WAB,Wabtec,XNYS
+WAT,Waters Corporation,XNAS
+WBD,Warner Bros. Discovery,XNYS
+WDAY,"Workday, Inc.",XNAS
+WDC,Western Digital,XNAS
+WEC,WEC Energy Group,XNYS
+WELL,Welltower,XNYS
+WFC,Wells Fargo,XNYS
+WM,Waste Management,XNAS
+WMB,Williams Companies,XNYS
+WMT,Walmart,XNYS
+WRB,W. R. Berkley Corporation,XNYS
+WSM,"Williams-Sonoma, Inc.",XNYS
+WST,West Pharmaceutical Services,XNYS
+WTW,Willis Towers Watson,XNAS
+WY,Weyerhaeuser,XNYS
+WYNN,Wynn Resorts,XNAS
+XEL,Xcel Energy,XNAS
+XOM,ExxonMobil,XNYS
+XYL,Xylem Inc.,XNYS
+XYZ,"Block, Inc.",XNYS
+YUM,Yum! Brands,XNAS
+ZBH,Zimmer Biomet,XNYS
+ZBRA,Zebra Technologies,XNAS
+ZTS,Zoetis,XNAS
