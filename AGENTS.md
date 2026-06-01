@@ -43,6 +43,10 @@ mvn test -Dtest=AlphaVantageConnectionTest  # verifies Alpha Vantage daily price
 | `STOCK_API_URL` | `https://www.alphavantage.co/query` | API endpoint |
 | `PORT` | `8080` | Server port |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173` | Comma-separated origins |
+| `INTRADAY_ENABLED` | `false` | Enable Alpaca intraday WebSocket streaming |
+| `ALPACA_API_KEY` | — | Alpaca API key ID |
+| `ALPACA_API_SECRET` | — | Alpaca secret key |
+| `ALPACA_WS_URL` | `wss://stream.data.alpaca.markets/v2/iex` | WebSocket URL (IEX free, `/v2/sip` paid) |
 
 ## API endpoints
 All under `/api`; actuator health at `/actuator/health`.
@@ -59,6 +63,9 @@ Swagger UI at `http://localhost:18080/swagger-ui.html` (local) or `/swagger-ui.h
 | GET | `/symbols/{id}/prices` | Daily prices |
 | POST | `/prices` | Add price record |
 | GET | `/daily/{ticker}?since=YYYY-MM-DD` | Daily prices since date (DB query, no API call) |
+| GET | `/intraday/{ticker}?since=ISO_INSTANT` | Intraday minute bars (Alpaca WebSocket feed) |
+| GET | `/intraday/{ticker}/latest` | Latest intraday bar for a ticker |
+| GET | `/intraday/status` | WebSocket connection status |
 
 ### Ingestion (data loading)
 | Method | Path | Notes |
@@ -93,7 +100,7 @@ Swagger UI at `http://localhost:18080/swagger-ui.html` (local) or `/swagger-ui.h
 
 ## Scheduled tasks
 - **Daily data**: daily at 6:00 AM (all S&P 500 tickers in DB)
-- **Intraday data**: not implemented
+- **Intraday data**: real-time Alpaca WebSocket (`intraday.enabled=true`) — subscribes to all DB symbols on startup
 - 15s delay between tickers (API rate limit)
 - `ExchangeSymbolSeeder` creates NASDAQ (XNAS), NYSE (XNYS) + all 503 S&P 500 symbols on startup (`!demo` profile)
 - `DemoDataSeeder` does the same for `demo` profile + fetches all price data
