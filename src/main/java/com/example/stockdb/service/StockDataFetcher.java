@@ -9,5 +9,9 @@ public interface StockDataFetcher {
     String OUTPUT_SIZE_FULL = "full";
     String OUTPUT_SIZE_COMPACT = "compact";
 
-    List<DailyPrice> fetchDailyPrices(String symbol, String outputSize);
+    default List<DailyPrice> fetchDailyPrices(String symbol, String outputSize) {
+        return fetchDailyPrices(symbol, outputSize, null);
+    }
+
+    List<DailyPrice> fetchDailyPrices(String symbol, String outputSize, String sinceDate);
 }

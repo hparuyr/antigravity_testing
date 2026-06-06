@@ -108,11 +108,13 @@ public class StockService {
     @Transactional
     public int fetchAndStoreDailyPrices(String ticker) {
         Symbol symbol = getSymbolByTicker(ticker);
-        String outputSize = dailyPriceRepository.countBySymbolId(symbol.getId()) == 0
-            ? StockDataFetcher.OUTPUT_SIZE_FULL
-            : StockDataFetcher.OUTPUT_SIZE_COMPACT;
+        String sinceDate = dailyPriceRepository.findFirstBySymbolIdOrderByDateDesc(symbol.getId())
+            .map(DailyPrice::getDate)
+            .orElse(null);
 
-        List<DailyPrice> prices = stockDataFetcher.fetchDailyPrices(ticker, outputSize);
+        List<DailyPrice> prices = stockDataFetcher.fetchDailyPrices(ticker,
+            sinceDate != null ? StockDataFetcher.OUTPUT_SIZE_COMPACT : StockDataFetcher.OUTPUT_SIZE_FULL,
+            sinceDate);
         for (DailyPrice price : prices) {
             price.setSymbol(symbol);
             upsertPrice(symbol.getId(), price);

@@ -40,6 +40,11 @@ public class AlphaVantageService implements StockDataFetcher {
 
     @Override
     public List<DailyPrice> fetchDailyPrices(String symbol, String outputSize) {
+        return fetchDailyPrices(symbol, outputSize, null);
+    }
+
+    @Override
+    public List<DailyPrice> fetchDailyPrices(String symbol, String outputSize, String sinceDate) {
         String effectiveSize = OUTPUT_SIZE_COMPACT;
         String url = String.format(
             "%s?function=TIME_SERIES_DAILY&symbol=%s&outputsize=%s&apikey=%s",

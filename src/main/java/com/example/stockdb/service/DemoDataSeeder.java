@@ -4,10 +4,11 @@ import com.example.stockdb.model.Exchange;
 import com.example.stockdb.model.Symbol;
 import com.example.stockdb.repository.ExchangeRepository;
 import com.example.stockdb.repository.SymbolRepository;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class DemoDataSeeder {
         this.sp500Loader = sp500Loader;
     }
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void seed() {
         log.info("Seeding demo data...");
