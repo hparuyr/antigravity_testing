@@ -25,21 +25,42 @@ public class DemoStockDataFetcher implements StockDataFetcher {
 
     @Override
     public List<DailyPrice> fetchDailyPrices(String symbol, String outputSize) {
+        return fetchDailyPrices(symbol, outputSize, null);
+    }
+
+    @Override
+    public List<DailyPrice> fetchDailyPrices(String symbol, String outputSize, String sinceDate) {
         Random rng = new Random(symbol.hashCode());
-        int days = OUTPUT_SIZE_FULL.equals(outputSize) ? FULL_DAYS : COMPACT_DAYS;
-        List<DailyPrice> prices = new ArrayList<>(days);
+        List<DailyPrice> prices = new ArrayList<>();
 
-        double price = DEFAULT_BASE_PRICE + rng.nextDouble() * 300;
+        if (sinceDate != null) {
+            LocalDate start = LocalDate.parse(sinceDate).plusDays(1);
+            LocalDate today = LocalDate.now();
+            int days = (int) start.until(today).getDays();
+            if (days <= 0) return List.of();
 
-        for (int i = days; i > 0; i--) {
-            LocalDate date = LocalDate.now().minusDays(i);
-            double change = price * rng.nextGaussian() * VOLATILITY;
-            price = Math.max(price + change, 1.0);
+            double price = DEFAULT_BASE_PRICE + rng.nextDouble() * 300;
+            for (int i = 0; i < days; i++) {
+                LocalDate date = start.plusDays(i);
+                double change = price * rng.nextGaussian() * VOLATILITY;
+                price = Math.max(price + change, 1.0);
+                prices.add(buildPrice(date, price, change, rng));
+            }
+        } else {
+            int days = OUTPUT_SIZE_FULL.equals(outputSize) ? FULL_DAYS : COMPACT_DAYS;
+            double price = DEFAULT_BASE_PRICE + rng.nextDouble() * 300;
 
-            prices.add(buildPrice(date, price, change, rng));
+            for (int i = days; i > 0; i--) {
+                LocalDate date = LocalDate.now().minusDays(i);
+                double change = price * rng.nextGaussian() * VOLATILITY;
+                price = Math.max(price + change, 1.0);
+                prices.add(buildPrice(date, price, change, rng));
+            }
         }
 
-        log.info("Generated {} demo daily prices for {}", prices.size(), symbol);
+        if (!prices.isEmpty()) {
+            log.info("Generated {} demo daily prices for {} (since: {})", prices.size(), symbol, sinceDate != null ? sinceDate : "beginning");
+        }
         return prices;
     }
 
