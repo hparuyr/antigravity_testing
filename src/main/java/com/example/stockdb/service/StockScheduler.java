@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@Profile("!demo")
 public class StockScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(StockScheduler.class);
