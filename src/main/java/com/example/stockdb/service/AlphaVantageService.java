@@ -45,7 +45,7 @@ public class AlphaVantageService implements StockDataFetcher {
 
     @Override
     public List<DailyPrice> fetchDailyPrices(String symbol, String outputSize, String sinceDate) {
-        String effectiveSize = OUTPUT_SIZE_COMPACT;
+        String effectiveSize = outputSize != null ? outputSize : OUTPUT_SIZE_COMPACT;
         String url = String.format(
             "%s?function=TIME_SERIES_DAILY&symbol=%s&outputsize=%s&apikey=%s",
             apiUrl, symbol, effectiveSize, apiKey
@@ -67,6 +67,9 @@ public class AlphaVantageService implements StockDataFetcher {
             Iterator<Map.Entry<String, JsonNode>> fields = timeSeries.fields();
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> field = fields.next();
+                if (sinceDate != null && field.getKey().compareTo(sinceDate) <= 0) {
+                    continue;
+                }
                 JsonNode data = field.getValue();
                 prices.add(toDailyPrice(field.getKey(), data));
             }
